@@ -1,0 +1,89 @@
+.setting-body {
+    display: none;
+    position: absolute;
+    top: 63px;
+    left: 0;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.12);
+    border: 1px solid #eee;
+    background-color: #fff;
+    z-index: 800;
+    min-width: 75px;
+    width: 300px;
+}
+.setting-body.show {
+    display: block;
+}
+.mod_address_slide_tabs_1 {
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #394043;
+    padding: 0px 20px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+.mod_address_slide_tabs_1 li {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.mod_address_slide_list_2 {
+    padding: 0px 20px;
+    min-height: 150px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.mod_address_slide_list_2 li {
+    cursor: pointer;
+    height: 40px;
+    line-height: 40px;
+    font-weight: 400;
+    font-size: 14px;
+}
+.mod_address_slide_tabs_1 li.cur,
+.mod_address_slide_tabs_1 li.active,
+.mod_address_slide_list_2 li.active,
+.mod_address_slide_list_2 li.cur {
+    color: #00a0e9;
+    font-weight: 700;
+    cursor: inherit;
+}
+.mod_address_slide_list_empty {
+    padding: 20px;
+    text-align: center;
+}
+
+.mod_address_slide_list_3 {
+    height: 40px;
+    border-top: 1px solid #eee;
+    padding: 0 20px;
+}
+.mod_address_slide_list_3 a:last-child {
+    float: right;
+}
+.mod_address_slide_list_3 a.green {
+    color: #00a0e9;
+    font-weight: bold;
+    font-size: 13px;
+    margin-top: 10px;
+}
+.sheet-clear {
+    right: 20px;
+    color: #394043;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    cursor: pointer;
+}
+.sheet-clear i {
+    display: inline-block;
+    margin-right: 7px;
+    background-image: url('../images/clear.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    width: 15px;
+    height: 12px;
+    vertical-align: -1px;
+}

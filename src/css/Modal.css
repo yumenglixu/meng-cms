@@ -1,0 +1,191 @@
+/*谈话浮层*/
+.talk-contaner {
+    position: relative;
+    z-index: 1008;
+    display: none;
+}
+.talk-contaner-show {
+    display: block;
+}
+.talk-contaner .overlay_bg {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: .6;
+    filter: alpha(opacity=60);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    z-index: 1003;
+}
+.talk-contaner .talk-panel {
+    width: 420px;
+    min-height: 200px;
+    padding-bottom: 25px;
+    background-color: #fff;
+    position: fixed;
+    /* z-index: 999; */
+    left: 50%;
+    top: 10%;
+    margin-left: -210px;
+    /* margin-top: -205px; */
+    padding-left: 40px;
+    box-shadow: 1px 3px 14px rgba(0,0,0,0.3);
+    -moz-box-shadow: 1px 3px 14px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 1px 3px 14px rgba(0,0,0,0.3);
+    -o-box-shadow: 1px 3px 14px rgba(0,0,0,0.3);
+    /* display: none; */
+    z-index: 10000;
+    border-radius: 1px;
+}
+.talk-panel .panel-info {
+    padding-top: 40px;
+    width: 340px;
+}
+.panel-info .close-login {
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    padding: 4px;
+    font-style: normal;
+}
+.panel_tab .title {
+    min-height: 20px;
+    line-height: 20px;
+    margin-bottom: 40px;
+    padding-left: 0;
+    color: #394043;
+}
+.panel_tab .title .fl {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+.register_text_tel {
+    color: #aaa;
+    padding: 40px 0 0;
+    line-height: 1;
+    font-size: 14px;
+}
+.con-panel-main {
+    width: 100%;
+}
+.con-panel-main>ul>li {
+    color: #555555;
+    clear: both;
+    height: 50px;
+    position: relative;
+    border: 1px solid #dbdbdb;
+    border-radius: 2px 2px 0 0;
+    background: #fff;
+    padding: 0;
+    margin-top: -1px;
+}
+.con-panel-main li .the_input {
+    width: 322px;
+    height: 48px;
+    line-height: 48px;
+    color: #333333;
+    font-size: 14px;
+    padding-left: 16px;
+    outline: none;
+    border: none;
+}
+.con-panel-main li .the_input[readonly] {
+    cursor: pointer;
+}
+.con-panel-main li.textarea {
+    height: 144px;
+}
+.con-panel-main li.switch {
+    margin-top: 15px;
+}
+.con-panel-main li.textarea  textarea{
+    height: 140px;
+    line-height: 35px;
+    resize: none;
+}
+.con-panel-main li input.topSpecial {
+    border-radius: 2px 2px 0 0;
+}
+.talk-panel .panel-info .input-btn {
+    width: 45%;
+    margin-right: 10%;
+}
+.con-panel-main li .send {
+    position: absolute;
+    right: 5px;
+    top: 9px;
+    width: 112px;
+    height: 33px;
+    line-height: 31px;
+    color: #00a0e9;
+    /* border: 1px solid #ccc; */
+    border-radius: 1px;
+    text-align: center;
+    /* color: #666; */
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #fff;
+}
+.con-panel-main li .send.disabled{
+    /* border-color: #eee; */
+    color: #999;
+    cursor: not-allowed;
+}
+
+.con-panel-main li .label {
+    float: left;
+    display: block;
+    height: 48px;
+    line-height: 48px;
+    width: 90px;
+    padding-left: 16px;
+    color: #394043;
+    border-right: 1px solid #dbdbdb;
+    background-color: #f7f7fc;
+}
+.con-panel-main li .ant-calendar-picker {
+    margin-right: 16px;
+    margin-left: 89px;
+    height: 40px;
+    margin-top: 4px;
+}
+.con-panel-main li .ant-calendar-picker input {
+    width: 99%;
+    padding-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+}
+
+.property-buy-action {
+    margin-top: 17px;
+}
+.property-buy-action .input-btn {
+    padding-left: 0;
+    padding-right: 0;
+    width: 128px;
+    height: 45px;
+    border-radius: 2px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -ms-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    margin-right: 25px;
+}
+.property-buy-action .input-btn:last-child {
+    margin-right: 0;
+}
+.property-buy-action .input-btn i {
+    font-weight: 700;
+    color: #fff;
+    font-size: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+}

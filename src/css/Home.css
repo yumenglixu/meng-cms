@@ -1,0 +1,154 @@
+.base-info {
+    padding: 25px 30px;
+    height: 100%;
+    overflow-y: auto;
+}
+.base-info .title-box {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 23px;
+    color: rgb(51, 51, 51);
+}
+.base-info .user-img {
+    margin: 20px 0;
+    height: 160px;
+}
+.base-info .user-img .col-2 {
+    width: 16%;
+    display: inline-block;
+    margin-right: .66666%;
+}
+.base-info .user-img .col-2:last-child {
+    margin-right: 0;
+}
+.base-info .title-box .input-btn {
+    padding: 0 15px;
+    height: 28px;
+    line-height: 26px;
+    font-size: 13px;
+}
+.login-group-btn {
+    width: 372px;
+    margin: 0 auto;
+}
+
+
+.review-list-container {
+    margin-top: 25px;
+}
+
+.review-list-container .review-border {
+    border-bottom: 1px solid #d6d6d6;
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+}
+.review-list-container .review-border:last-child {
+    border-bottom: none;
+}
+.review-list-container .review-point {
+    cursor: pointer;
+}
+
+.review-list-container .review-head,
+.review-list-container .review-head:hover {
+    color: #666;
+    font-size: 12px;
+    height: 36px;
+    line-height: 36px;
+    background-color: inherit;
+    padding-left: 5px;
+}
+
+.review-list-container .col-left {
+    text-align: left;
+}
+
+.review-list-container .col-center {
+    text-align: center;
+}
+
+.review-list-container .review-content {
+    border-color: #e0e0e0;
+}
+
+.review-list-container .review-border {
+    border-bottom: 1px solid #d6d6d6;
+}
+
+.review-list-container .review-content {
+    /* border-left: 5px solid initial; */
+    padding-left: 5px;
+}
+
+.review-list-container .review-content:hover {
+    background-color: #f7f7fa;
+    border-left: 5px solid #00a0e9;
+    padding-left: 0;
+}
+
+.review-list-container .col-height {
+    line-height: 70px;
+}
+
+.review-list-container .review-content > div {
+    height: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+.review-list-container .review-content > div.ant-col-24 {
+    height: auto;
+    min-height: 70px;
+    border-top: 1px solid #d6d6d6;
+}
+.review-list-container .review-table .commit {
+    color: #00a0e9;
+    font-family: Consolas, Menlo, Courier, monospace;
+}
+
+.review-list-container .review-table .commit a {
+    display: block;
+    color: #00a0e9;
+}
+
+.review-list-container .review-table .commit a:hover {
+    text-decoration: underline;
+}
+
+.user-link-avatar {
+    height: 30px;
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 30px;
+    display: inline-block;
+    border: 1px solid #f7f7fa;
+}
+
+.review-list-container .review-table .result i {
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.review-list-container .review-table .result.success {
+    color: #81b536;
+}
+
+.review-list-container .review-table .result.doing {
+    color: #00a0e9;
+}
+
+.review-list-container .review-table .result.fail {
+    color: #ff2d50;
+}
+.handle-branch-menu button {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 10px;
+    padding: 0 15px;
+    height: 28px;
+}

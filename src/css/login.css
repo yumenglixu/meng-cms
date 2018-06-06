@@ -1,0 +1,133 @@
+.login-wrapper {
+    padding: 40px 0 0 0;
+}
+.login-wrapper h1 {
+    margin: 0 auto;
+    width: 372px;
+    font-size: 32px;
+    margin-bottom: 28px;
+    text-align: center;
+    color: #394043;
+    font-weight: 400;
+}
+.sign-from {
+    width: 372px;
+    margin: 0 auto;
+}
+.sign-from  ul {
+    width: 100%;
+}
+.sign-from  ul li {
+    position: relative;
+    margin-top: -1px;
+}
+.sign-from .inputText {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    height: 55px;
+    line-height: 55px;
+    font-size: 14px;
+    outline: none;
+    border: none;
+    text-indent: 19px;
+    border: 1px solid #e4e4e4;
+    /* border-top: none; */
+}
+.sign-from .mt10 label {
+    display: block;
+    width: 374px;
+    margin: 0 auto;
+    padding-top: 15px;
+    text-align: center;
+}
+
+.sign-from .mt10 a {
+    color: #00a0e9;
+}
+.login-group-btn {
+    width: 372px;
+    margin: 0 auto;
+}
+.login-group-btn .input-btn {
+    width: 100%;
+    height: 45px;
+    border-radius: 2px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -ms-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    margin-top: 15px;
+}
+.sign-from .send {
+    position: absolute;
+    right: 15px;
+    top: 11px;
+    width: 112px;
+    height: 33px;
+    line-height: 31px;
+    border: 1px solid #ccc;
+    border-radius: 1px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #fff;
+}
+.sign-from .send.disabled{
+    border-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
+
+.error-info  {
+    width: 372px;
+    margin: 0 auto;
+    visibility: hidden;
+    color: #e4393c;
+    line-height: 26px;
+    text-align: right;
+    margin-top: 15px;
+}
+.error-info.is-visible {
+    visibility: visible;
+}
+.error-info i {
+    margin-right: 5px;
+}
+/*第三方*/
+.login-other {
+    width: 372px;
+    margin: 0 auto;
+    margin-top: 25px;
+    text-align: center;
+}
+.login-other h4 {
+    font-size: 13px;
+    color: #999;
+}
+.login-other dd {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    color: #8590a6;
+    line-height: 40px;
+    margin-top: 15px;
+}
+.login-other dd i {
+    font-size: 25px;
+    vertical-align: middle;
+}
+.login-other dd i.icon-qq {
+    font-size: 23px;
+}
+.login-other dd i.icon-qq:hover {
+    color: #e4393c;
+}
+.login-other dd i.icon-weixin:hover {
+    color: rgb(67, 212, 128);
+}
