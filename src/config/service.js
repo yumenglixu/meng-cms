@@ -7,13 +7,12 @@ let qs = require('qs');
 
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
-	console.log(response);
 	// 用户未登录时自动跳转登录地址
     if (response.data.rspMsg === '请登录') {
     	// if (!/\/user$/.test(response.config.url)) {
     	// 	auth.toLogin();
 		// }
-		// auth.toLogin();
+		auth.toLogin();
     }
     return response.data;
 }, function (error) {
@@ -56,7 +55,9 @@ export default {
 	login: (data)=> {
 		return axiosHttp('post', `${config.HOST}${config.LOGIN}`, data);
 	},
-	
+	logout: (data) => {
+		return axiosHttp('post', `${config.HOST}${config.LOGOUT}`, data);
+	},
 	// 商户机构列表
 	getMerchantsInfo:  (params)=>{
 		return axiosHttp('post', `${config.HOST}${config.MERCHANTS_DETAIL}`, params);

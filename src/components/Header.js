@@ -10,22 +10,21 @@ const queryString = require('query-string');
 const menu = (
     <Menu onClick={(e) => {
         if(e.key == '/logout'){
-            Cookies.remove('access_token');
-            Service.logout().then((res)=>{
+            let id = JSON.parse(Cookies.get('userInfo')).id;
+            Cookies.remove('sessionId');
+            Cookies.remove('userInfo');
+            Service.logout({
+                id
+            }).then((res)=>{
                 window.location.href = '/login';
             }); 
         }
     }}>
-        {/* <Menu.Item  key="/me">
-            <a>个人中心</a>
-        </Menu.Item>
-        <Menu.Divider/> */}
         <Menu.Item  key="/logout">
             <a>退出系统</a>
         </Menu.Item>
     </Menu>
-  );
-
+);
   
 const Header = observer(class LeftNavCompent extends Component {
     constructor(props){

@@ -11,6 +11,7 @@ export default {
 	HOST_IMG: 'http://39.105.28.121:7777/img/',
 	//  人员登录
 	LOGIN: '/usr/sysusr/login',
+	LOGOUT: '/usr/sysusr/logout',
 	
 	UPLOAD_FILE: '/comm/img/upload',
 	UPLOAD_FILE_MULTI: '/comm/img/multi/upload',

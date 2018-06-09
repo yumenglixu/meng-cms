@@ -174,25 +174,7 @@ let Course = observer(class Course extends Component {
         }).then(res => {
             if (res.rspCode == '0000000000') {
                 this.list = res.body.list.map(val => {
-                    let stateLable = '待提交';
-                    switch(+val.state) {
-                        case 1:
-                            stateLable = '待提交';
-                        break; 
-                        case 2:
-                            stateLable = '待审核';
-                        break; 
-                        case 3:
-                            stateLable = '已上线';
-                        break;
-                        case 4:
-                            stateLable = '拒绝';
-                        break;
-                        case 5:
-                            stateLable = '已下线';
-                        break; 
-                    }
-                    val.stateLable = stateLable;
+                    val.stateLable = this.getLableStatus(val.state);
                     return val;
                 });
                 this.setState({
@@ -208,6 +190,27 @@ let Course = observer(class Course extends Component {
             this.initLoading = false;
         });
     }
+    getLableStatus(state) {
+        let stateLable = '待提交';
+        switch(+state) {
+            case 1:
+                stateLable = '待提交';
+            break; 
+            case 2:
+                stateLable = '待审核';
+            break; 
+            case 3:
+                stateLable = '已上线';
+            break;
+            case 4:
+                stateLable = '拒绝';
+            break;
+            case 5:
+                stateLable = '已下线';
+            break; 
+        }
+        return stateLable;
+    }
     updateState(val, state) {
         Service.updateCourse({
             id: val.id,
@@ -215,6 +218,7 @@ let Course = observer(class Course extends Component {
         }).then(res => {
             if (res.rspCode == '0000000000') {
                 val.state = state;
+                val.stateLable = this.getLableStatus(state);
                 message.success('操作成功');
             }
             else {
