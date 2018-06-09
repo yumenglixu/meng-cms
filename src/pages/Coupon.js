@@ -7,32 +7,39 @@ import {
     Tooltip,
     Form,
     Input,
-    message,
+    InputNumber,
     Select,
     Cascader,
     Upload,
     Button,
-    Pagination
+    Pagination,
+    DatePicker,
+    Table
 } from 'antd';
 import objectAssign from 'object-assign';
+import Service from '../config/service';
 import Loading from '../components/Loading';
 import NoData from '../components/NoData';
-import Service from '../config/service';
 import moment from 'moment';
 const queryString = require('query-string');
 const Option = Select.Option;
-let Course = observer(class Course extends Component {
+const RangePicker = DatePicker.RangePicker;
+let Info = observer(class Coupon extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            type: '',
             total: 10
         }
         extendObservable(this, {
+            baseInfo: {
+                name: ''
+            },
             list: [],
             activePage: 1,
             initLoading: true
         });
-        this.getList();
+        this.reset();
     }
 
     render() {
@@ -43,51 +50,63 @@ let Course = observer(class Course extends Component {
                     <div className="review-filter">
                         <Form className="ant-row review-border review-head">
                             <Form layout="inline">
-                                <div className="ant-row ant-form-item" style={{width: 350}}>
+                                <div className="ant-row ant-form-item" style={{width: 250}}>
                                     <div className="ant-form-item-label">
-                                        <label for="select" class="" title="课程名称">课程名称</label>
+                                        <label for="select" >优惠券类型</label>
                                     </div>
-                                    {getFieldDecorator('name', {initialValue: ''})(
-                                        <Input type="text" placeholder="请输入课程名称" style={{width: 250}}/>
+                                    {getFieldDecorator('couponSource', {initialValue:''})(
+                                        <Select id="select" size="large" initialValue="" style={{width: 150}}>
+                                            <Option value="">不限</Option>
+                                            <Option value="0">平台优惠券</Option>
+                                            <Option value="1">商家优惠券</Option>
+                                            <Option value="2">其他</Option>
+                                        </Select>
                                     )}
                                 </div>
                                 <div className="ant-row ant-form-item" style={{width: 250}}>
                                     <div className="ant-form-item-label">
-                                        <label for="select" class="" title="课程状态">课程状态</label>
+                                        <label for="select" >优惠对象</label>
                                     </div>
-                                    {getFieldDecorator('state', {initialValue:''})(
-                                        <Select size="large" style={{width: 150}}>
-                                            <Option value="">不限</Option>
-                                            <Option value="1">待提交</Option>
-                                            <Option value="2">待审核</Option>
-                                            <Option value="3">上线</Option>
-                                            <Option value="4">拒绝</Option>
-                                            <Option value="5">下线</Option>
+                                    {getFieldDecorator('coupObj', {initialValue:'1'})(
+                                        <Select id="select" size="large" initialValue="1" style={{width: 150}}>
+                                            <Option value="1">全场通用</Option>
+                                            <Option value="2">品类内通用</Option>
+                                            <Option value="3">指定课程</Option>
                                         </Select>
+                                    )}
+                                </div>
+                                <div className="ant-row ant-form-item" style={{width: 250}}>
+                                    <div className="ant-form-item-label">
+                                        <label for="select" >优惠券ID</label>
+                                    </div>
+                                    {getFieldDecorator('id', {initialValue: ''})(
+                                        <Input type="uid" placeholder="请输入优惠券ID" style={{width: 150}}/>
                                     )}
                                 </div>
                                 <Button type="primary" onClick={this.reset.bind(this)}>查 询</Button>
                                 <Button type="danger" className="fr" onClick={() => {
-                                    this.props.history.push('/cms/course/add');
+                                    this.props.history.push('/cms/coupon/add');
                                 }}>
-                                    <Icon type="plus" />
-                                    创建课程
+                                    <Icon type="pay-circle" />
+                                    新增优惠券
                                 </Button>
                             </Form>
                         </Form>
                     </div>
+
                     <div className="review-list-container">
                         <div className="review-table">
                             <div className="ant-row review-border review-head">
-                                <div className="ant-col-2">课程ID</div>
-                                <div className="ant-col-4">课程名称</div>
-                                <div className="ant-col-2">课程开始日期</div>
-                                <div className="ant-col-2">课程结束日期</div>
-                                <div className="ant-col-2">报名截止日期</div>
-                                <div className="ant-col-2">课程状态</div>
-                                <div className="ant-col-2">报名人数</div>
-                                <div className="ant-col-2 col-center">课程价格</div>
-                                <div className="ant-col-6 col-center">操作</div>
+                                <div className="ant-col-2">优惠券ID</div>
+                                <div className="ant-col-2">优惠券类型</div>
+                                <div className="ant-col-3">优惠对象</div>
+                                <div className="ant-col-2">折扣方式</div>
+                                <div className="ant-col-2">优惠额度</div>
+                                <div className="ant-col-2">封顶额度</div>
+                                <div className="ant-col-4">有效期范围</div>
+                                <div className="ant-col-2 col-center">券状态</div>
+                                <div className="ant-col-2">最近修改人</div>
+                                <div className="ant-col-3 col-center">操作</div>
                             </div>
                             {!this.initLoading && this.list.map((val, key) => {
                                 return (
@@ -95,42 +114,33 @@ let Course = observer(class Course extends Component {
                                         <div className="ant-col-2 col-height">
                                             <span>{val.id}</span>
                                         </div>
+                                        <div className="ant-col-2 col-height">
+                                            <span>{val.couponSourceName}</span>
+                                        </div>
+                                        <div className="ant-col-3 col-height">
+                                            <span>{val.coupObjName}</span>
+                                        </div>
+                                        <div className="ant-col-2 col-height">
+                                            <span>{val.discountMethod == 0 ? '金额折扣' : '比例折扣'}</span>
+                                        </div>
+                                        <div className="ant-col-2 col-height">
+                                            <span>{val.couponValue} {val.discountMethod == 0 ? '元' : '%'}</span>
+                                        </div>
+                                        <div className="ant-col-2 col-height">
+                                            <span>{val.cappedAmount}</span>
+                                        </div>
                                         <div className="ant-col-4 col-height">
-                                            <span>{val.name}</span>
+                                            <span>{val.atimeStart} ~ {val.atimeEnd}</span>
                                         </div>
                                         <div className="ant-col-2 col-height">
-                                            <span>{val.cstartDate}</span>
+                                            <span>{val.couponStatus == 0 ? '有效' : '废弃'}</span>
                                         </div>
                                         <div className="ant-col-2 col-height">
-                                            <span>{val.cendDate}</span>
+                                            <span>{val.modifyUserName}</span>
                                         </div>
-                                        <div className="ant-col-2 col-height">
-                                            <span>{val.eendDate}</span>
-                                        </div>
-                                        <div className="ant-col-2 col-height">
-                                            <span>{val.stateLable}</span>
-                                        </div>
-                                        <div className="ant-col-2 col-height">
-                                            <span>{Math.max(0, val.cecount)} / {val.ccapcity}(总数)</span>
-                                        </div>
-                                        <div className="ant-col-2 col-height">
-                                            <span>{val.price}元 / {val.priceUnit}</span>
-                                        </div>
-                                        <div className="ant-col-6 col-height handle-branch-menu">
-                                            {(val.state == 1 || val.state == 4) && (
-                                                <Button typ="ghost" onClick={this.updateState.bind(this, val, 2)}>提交审核</Button>
-                                            )}
-                                            {/* {val.state == 2 && (
-                                                <span className="color-green">已提交(审核中)</span>
-                                            )} */}
-                                            {val.state == 3 && (
-                                                <Button type="ghost" onClick={this.updateState.bind(this, val, 5)}>课程下线</Button>
-                                            )}
-                                            {val.state == 5 && (
-                                                <Button type="ghost" onClick={this.updateState.bind(this, val, 3)}>发布课程</Button>
-                                            )}
+                                        <div className="ant-col-3 col-height handle-branch-menu">
                                             <Button type="ghost" onClick={() => {
-                                                this.props.history.push(`/cms/course/info/${val.id}`);    
+                                                this.props.history.push(`/cms/coupon/info/${val.id}`);    
                                             }}>查看详情</Button>
                                         </div>
                                     </div>
@@ -157,7 +167,6 @@ let Course = observer(class Course extends Component {
             </div>
         );
     }
-
     reset() {
         this.activePage = 1;
         this.initLoading = true;
@@ -165,34 +174,28 @@ let Course = observer(class Course extends Component {
     }
     getList() {
         this.initLoading = true;
-        let {name, state} = this.props.form.getFieldsValue();
-        Service.getCourseList({
-            name,
-            state,
+        let {couponSource, id, coupObj} = this.props.form.getFieldsValue();
+        Service.getCouponList({
+            couponSource,
+            id,
+            coupObj,
             pageIndex: this.activePage,
             pageSize: 10
         }).then(res => {
             if (res.rspCode == '0000000000') {
                 this.list = res.body.list.map(val => {
-                    let stateLable = '待提交';
-                    switch(+val.state) {
+                    // 平台类型
+                    switch(+val.couponSource) {
+                        case 0:
+                            val.couponSourceName = '平台优惠券'
+                        break;
                         case 1:
-                            stateLable = '待提交';
-                        break; 
+                            val.couponSourceName = '商户优惠券'
+                        break;
                         case 2:
-                            stateLable = '待审核';
-                        break; 
-                        case 3:
-                            stateLable = '已上线';
+                            val.couponSourceName = '其他'
                         break;
-                        case 4:
-                            stateLable = '拒绝';
-                        break;
-                        case 5:
-                            stateLable = '已下线';
-                        break; 
                     }
-                    val.stateLable = stateLable;
                     return val;
                 });
                 this.setState({
@@ -208,21 +211,7 @@ let Course = observer(class Course extends Component {
             this.initLoading = false;
         });
     }
-    updateState(val, state) {
-        Service.updateCourse({
-            id: val.id,
-            state
-        }).then(res => {
-            if (res.rspCode == '0000000000') {
-                val.state = state;
-                message.success('操作成功');
-            }
-            else {
-                message.error(res.rspMsg || '未知原因导致失败');
-            }
-        });
-    }
 });
 
-Course = Form.create()(Course);
-export default Course;
+Info = Form.create()(Info);
+export default Info;

@@ -27,11 +27,37 @@ export default {
 	COURSE_LIST: '/edu/courses/list',
 	COURSE_DETAIL: '/edu/courses/detail',
 	COURSE_UPDATE: '/edu/courses/update',
+	COURSE_ADD: '/edu/courses/add',
 	
+	// 班级信息
+	CLASS_LIST: '/edu/classes/list',
+	CLASS_UPDATE: '/edu/classes/update',
+	CLASS_ADD: '/edu/classes/add',
+	CLASS_DEL: '/edu/classes/delete',
+
+	// 优惠券
+	COUPON_LIST: '/edu/coupons/list',
+	COUPON_DETAIL: '/edu/coupons/detail',
+	COUPON_UPDATE: '/edu/coupons/update',
+	COUPON_ADD: '/edu/coupons/add',
+	COUPON_DEL: '/edu/coupons/delete',
+	COUPON_OPER_DETAIL: '/edu/coupons/oper/list',
 	// 品类
 	CATEGORY_LIST: '/comm/categories/list',
 	// 预结算金额
 	SETTLE_AMOUNT: '/edu/courses/settle/amount',
 	// 省市区
 	AREA: '/comm/address/selectLeaf',
+
+
+	couponSource: [{
+		key: '0',
+		name: '平台优惠券'
+	}, {
+		key: '1',
+		name: '商户优惠券'
+	}, {
+		key: '2',
+		name: '其他'
+	}]
 }

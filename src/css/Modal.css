@@ -82,6 +82,7 @@
     background: #fff;
     padding: 0;
     margin-top: -1px;
+    display: flex;
 }
 .con-panel-main li .the_input {
     width: 322px;
@@ -92,6 +93,7 @@
     padding-left: 16px;
     outline: none;
     border: none;
+    flex: 1;
 }
 .con-panel-main li .the_input[readonly] {
     cursor: pointer;
@@ -136,7 +138,11 @@
     color: #999;
     cursor: not-allowed;
 }
-
+.con-panel-main .ant-radio-group {
+    vertical-align: middle;
+    margin-top: 17px;
+    margin-left: 10px;
+}
 .con-panel-main li .label {
     float: left;
     display: block;

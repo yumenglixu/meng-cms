@@ -60,7 +60,7 @@ export default observer(class Page extends Component {
                                         <div className="col-2" style={{height: 160}} key={lk}>
                                             <div className={"ant-upload ant-upload-drag " + (lv.imgLinks && "no-b-all")}>
                                                 <div className="img">
-                                                    <img  src={config.HOST_IMG +  lv.imgLinks + "?t=" + (moment())}/>
+                                                    <div className="img-container" style={{backgroundImage: `url(${config.HOST_IMG}${lv.imgLinks}?t=${moment()})`}}></div>
                                                     <span className="del" title="删除图片" onClick={() => {
                                                         val.list.splice(lk, 1);
                                                     }}><Icon type="delete" /></span>

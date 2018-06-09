@@ -7,8 +7,9 @@ let qs = require('qs');
 
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
+	console.log(response);
 	// 用户未登录时自动跳转登录地址
-    if (response.data.rspCode === 'CIPSYS9999') {
+    if (response.data.rspMsg === '请登录') {
     	// if (!/\/user$/.test(response.config.url)) {
     	// 	auth.toLogin();
 		// }
@@ -106,6 +107,40 @@ export default {
 	},
 	updateCourse: (params)=>{
 		return axiosHttp('post', `${config.HOST}${config.COURSE_UPDATE}`, params);
+	},
+	addCourse: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COURSE_ADD}`, params);
+	},
+
+	// 班级信息
+	getClassList: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.CLASS_LIST}`, params);
+	},
+	delClass:  (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.CLASS_DEL}`, params);
+	},
+	updateClass: (params)=>{
+		if (params.id) {
+			return axiosHttp('post', `${config.HOST}${config.CLASS_UPDATE}`, params);
+		}
+		return axiosHttp('post', `${config.HOST}${config.CLASS_ADD}`, params);
+	},
+
+	// 优惠券
+	getCouponList: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COUPON_LIST}`, params);
+	},
+	getCouponDetail: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COUPON_DETAIL}`, params);
+	},
+	updateCoupon: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COUPON_UPDATE}`, params);
+	},
+	addCoupon: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COUPON_ADD}`, params);
+	},
+	getCouponOper: (params)=>{
+		return axiosHttp('post', `${config.HOST}${config.COUPON_OPER_DETAIL}`, params);
 	},
 
 	// 品类

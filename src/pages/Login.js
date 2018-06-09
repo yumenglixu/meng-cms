@@ -73,7 +73,6 @@ export default observer(class ShopDetail extends Component {
             account: this.account,
             password: this.password
         }, this.loginType).then((res)=>{
-            this.isLogin = false;
             if (res.rspCode == '0000000000') {
                 Cookies.set('sessionId', res.body.sessionId, {expires: 7});
                 Cookies.set('userInfo', JSON.stringify(res.body), {expires: 7});
@@ -86,11 +85,12 @@ export default observer(class ShopDetail extends Component {
                     else {
                         this.props.history.push('/cms');
                     }
-                }, 2000);
+                }, 1000);
             }
             else {
                 message.error(res.rspMsg || '未知原因导致失败');
             }
+            this.isLogin = false;
         }).catch(()=>{
             this.errorMsg = '未知原因导致出错'
             this.isLogin = false;

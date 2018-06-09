@@ -31,7 +31,7 @@ export default class MyActionSheet extends Component {
                     <ul className="mod_address_slide_list_2">
                         {this.state.data.length > 0 && this.state.data.map((val, key) => {
                             return (
-                                <li key={key} className={val.key == this.state.key && 'active'} onClick={() => {
+                                <li key={key}  className={val.key == this.state.key && 'active'} onClick={() => {
                                     if(this.props.maskClosable){
                                         this.setState({
                                             visible: false

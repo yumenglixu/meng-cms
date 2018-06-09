@@ -92,6 +92,11 @@
 .review-list-container .col-height {
     line-height: 70px;
 }
+.review-list-container .col-height-auto {
+    line-height: 22px;
+    padding: 24px 0;
+}
+
 
 .review-list-container .review-content > div {
     height: 70px;
@@ -99,6 +104,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
+}
+.review-list-container .review-content-auto > div {
+    height: auto;
 }
 .review-list-container .review-content > div.ant-col-24 {
     height: auto;
@@ -151,4 +159,8 @@
     margin-left: 10px;
     padding: 0 15px;
     height: 28px;
+}
+.handle-branch-menu .color-green {
+    color: #81b536;
+    margin-right: 10px;
 }

@@ -14,11 +14,14 @@ import {
     Pagination,
     DatePicker,
     message,
-    Radio
+    Radio,
+    Steps
 } from 'antd';
 import objectAssign from 'object-assign';
 import { Label } from 'react-bootstrap';
 import Modal from '../components/Modal';
+import Loading from '../components/Loading';
+import NoData from '../components/NoData';
 import MyActionSheetChoose from '../components/MyActionSheetChoose';
 import Service from '../config/service';
 import  utils from '../config/utils';
@@ -27,6 +30,7 @@ import config from '../config/config';
 const RadioGroup = Radio.Group;
 const queryString = require('query-string');
 const Option = Select.Option;
+const Step = Steps.Step;
 export default observer(class CourseInfo extends Component {
     constructor(props) {
         super(props);
@@ -36,35 +40,48 @@ export default observer(class CourseInfo extends Component {
         }
         extendObservable(this, {
             id: this.props.match.params.id, 
+            corid: JSON.parse(Cookies.get('userInfo')).corid,
             catelist: [],
-
-
-            list: [{}],
-            activePage: 1,
             detailInfo: {
-                rows:  []
+                rows:  [],
+                cstartDate: moment(),
+                cendDate: moment(),
+                eendDate: moment(),
+                settleAmount: 0,
+                courseAttr: 1
             },
+
+
+            list: [],
+            activePage: 1,
             education: {
-                start_date: moment(),
-                finish_date: moment(),
-                school: '',
-                major: '',
-                education: ''
+                id: '',
+                name: '',
+                count: '',
+                classTime: '',
+                classStatus: 0
             },
             titleModal: '创建班级',
             showModal: false,
-
+            initLoading: false,
 
             // 各个浮层展示
             cateModal: false,
+
+            step: 0
         });
         this.getCate();
-        // this.getDetail();
     }
 
     render() {
         return (
             <div className="base-info">
+                {this.props.type === 'add' && (
+                    <Steps current={this.step}>
+                        <Step title="创建课程" description="这里是多信息的描述" />
+                        <Step title="创建班级" description="这里是多信息的描述" />
+                    </Steps>
+                )}
                 <div className="title-box">课程详情</div>
                 <div className="box-input m-entry clearfix">
                     <dl className="col-6">
@@ -143,8 +160,8 @@ export default observer(class CourseInfo extends Component {
                         <dt>课程开始日期</dt>
                         <dd className="wrap-sug">
                             <div className="u-sug" id="u-sug">
-                                <DatePicker value={moment(this.detailInfo.cstartDate)} onChange={(v)=>{
-                                    this.detailInfo.cstartDate = v.format('YYYY-MM-DD');
+                                <DatePicker format="YYYY-MM-DD" value={moment(this.detailInfo.cstartDate)} onChange={(v)=>{
+                                    this.detailInfo.cstartDate = v;
                                 }}/>
                             </div>
                         </dd>
@@ -153,8 +170,8 @@ export default observer(class CourseInfo extends Component {
                         <dt>课程结束日期</dt>
                         <dd className="wrap-sug">
                             <div className="u-sug" id="u-sug">
-                                <DatePicker value={moment(this.detailInfo.cendDate)} onChange={(v)=>{
-                                    this.detailInfo.cendDate = v.format('YYYY-MM-DD');
+                                <DatePicker format="YYYY-MM-DD" value={moment(this.detailInfo.cendDate)} onChange={(v)=>{
+                                    this.detailInfo.cendDate = v;
                                 }}/>
                             </div>
                         </dd>
@@ -163,9 +180,23 @@ export default observer(class CourseInfo extends Component {
                         <dt>报名截止日期</dt>
                         <dd className="wrap-sug">
                             <div className="u-sug" id="u-sug">
-                                <DatePicker value={moment(this.detailInfo.eendDate)} onChange={(v)=>{
-                                    this.detailInfo.eendDate = v.format('YYYY-MM-DD');
+                                <DatePicker format="YYYY-MM-DD" value={moment(this.detailInfo.eendDate)} onChange={(v)=>{
+                                    this.detailInfo.eendDate = v;
                                 }}/>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>课程属性</dt>
+                        <dd className="wrap-sug">
+                            <div className="u-sug" id="u-sug">
+                                <RadioGroup onChange={(e) => {
+                                    this.detailInfo.courseAttr = e.target.value;
+                                }} value={this.detailInfo.courseAttr || 1}>
+                                    <Radio key="1" value={1}>周末课程</Radio>
+                                    <Radio key="2" value={2}>寒暑假课程</Radio>
+                                    <Radio key="3" value={3}>国际课程</Radio>
+                                </RadioGroup>
                             </div>
                         </dd>
                     </dl>
@@ -177,7 +208,7 @@ export default observer(class CourseInfo extends Component {
                             <div className="col-2" style={{height: 160}} key={lk}>
                                 <div className={"ant-upload ant-upload-drag " + (lv.imgLinks && "no-b-all")}>
                                     <div className="img">
-                                        <img  src={config.HOST_IMG +  lv.imgLinks + "?t=" + (moment())}/>
+                                        <div className="img-container" style={{backgroundImage: `url(${config.HOST_IMG}${lv.imgLinks}?t=${moment()})`}}></div>
                                         <span className="del" title="删除图片" onClick={() => {
                                             this.detailInfo.rows.splice(lk, 1);
                                         }}><Icon type="delete" /></span>
@@ -219,32 +250,14 @@ export default observer(class CourseInfo extends Component {
                         </dd>
                     </dl>  
                     <dl className="col-6">
-                        <dt>适合年龄</dt>
-                        <dd className="wrap-sug">
-                            <div className="u-sug" id="u-sug">
-                                <input className="sugInput"  type="text" placeholder="请输入适合年龄" value={this.detailInfo.properAges} onChange={(v)=>{
-                                    this.detailInfo.properAges = v.target.value;
-                                }}/>
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl className="col-6">
-                        <dt>已参加人数</dt>
-                        <dd className="wrap-sug">
-                            <div className="u-sug" id="u-sug">
-                                <input className="sugInput" type="text" readOnly  placeholder="请输入行业分类" value={this.detailInfo.cecount}/>
-                            </div>
-                        </dd>
-                    </dl>
-                    <dl className="col-6">
                         <dt>视频信号有效</dt>
                         <dd className="wrap-sug">
                             <div className="u-sug" id="u-sug">
                                 <RadioGroup onChange={(e) => {
-                                    this.detailInfo.rollDiffWay = e.target.value;
-                                }} value={this.detailInfo.rollDiffWay || 1}>
-                                    <Radio key="1" value={1}>开启直播</Radio>
-                                    <Radio key="2" value={2}>关闭直播</Radio>
+                                    this.detailInfo.videoState = e.target.value;
+                                }} value={this.detailInfo.videoState || 0}>
+                                    <Radio key="0" value={0}>开启直播</Radio>
+                                    <Radio key="1" value={1}>关闭直播</Radio>
                                 </RadioGroup>
                             </div>
                         </dd>
@@ -259,85 +272,148 @@ export default observer(class CourseInfo extends Component {
                             </div>
                         </dd>
                     </dl>
+                    <dl className={this.props.type === 'add' ? 'col-12' : 'col-6'}>
+                        <dt>适合年龄</dt>
+                        <dd className="wrap-sug">
+                            <div className="u-sug" id="u-sug">
+                                <input className="sugInput"  type="text" placeholder="比如 18岁-20岁" value={this.detailInfo.properAges} onChange={(v)=>{
+                                    this.detailInfo.properAges = v.target.value;
+                                }}/>
+                            </div>
+                        </dd>
+                    </dl>
+                    {this.props.type !== 'add' && (
+                        <dl className="col-6">
+                            <dt>已参加人数</dt>
+                            <dd className="wrap-sug">
+                                <div className="u-sug" id="u-sug">
+                                    <input className="sugInput" type="text" readOnly   value={this.detailInfo.cecount || 0}/>
+                                </div>
+                            </dd>
+                        </dl>
+                    )}
                     <dl>
                         <dt>备注信息</dt>
                         <dd className="wrap-sug">
                             <div className="u-sug" id="u-sug">
-                                <input className="sugInput" type="text"  placeholder="请输入备注信息" value={this.detailInfo.note} onChange={(v)=>{
-                                    this.detailInfo.note = v.target.value;
+                                <input className="sugInput" type="text"  placeholder="请输入备注信息" value={this.detailInfo.description} onChange={(v)=>{
+                                    this.detailInfo.description = v.target.value;
                                 }}/>
                             </div>
                         </dd>
                     </dl>
                 </div>
-                <div className="title-box">
-                    班级管理
-                    <div className="pull-right">
-                        <button className="input-btn input-btn-hover" onClick={() => {
-                            this.showModal = true;
-                        }}>
-                            <Icon type="plus" />
-                            创建班级
+                {this.id && (
+                    <div>
+                        <div className="title-box">
+                            班级管理
+                            <div className="pull-right">
+                                <button className="input-btn input-btn-hover" onClick={() => {
+                                    this.showModal = true;
+                                }}>
+                                    <Icon type="plus" />
+                                    创建班级
+                                </button>
+                            </div>
+                        </div>
+                        <div className="review-list-container">
+                            <div className="review-table">
+                                <div className="ant-row review-border review-head">
+                                    <div className="ant-col-2">序号</div>
+                                    <div className="ant-col-4">班级名称</div>
+                                    <div className="ant-col-5">上课时间说明</div>
+                                    <div className="ant-col-2">班级上课人数</div>
+                                    <div className="ant-col-2">班级状态</div>
+                                    <div className="ant-col-3">更新时间</div>
+                                    <div className="ant-col-6 col-center">操作</div>
+                                </div>
+                                {!this.initLoading && this.list.map((val, key) => {
+                                    return (
+                                        <div className="ant-row review-content review-border" key={key}>
+                                            <div className="ant-col-2 col-height">
+                                                <span>{val.id}</span>
+                                            </div>
+                                            <div className="ant-col-4 col-height">
+                                                <span>{val.name}</span>
+                                            </div>
+                                            <div className="ant-col-5 col-height">
+                                                <span>{val.classTime}</span>
+                                            </div>
+                                            <div className="ant-col-2 col-height">
+                                                <span>{val.pcount}</span>
+                                            </div>
+                                            <div className="ant-col-2 col-height">
+                                                <span>{val.classStatus == 0 ? '生效' : '失效'}</span>
+                                            </div>
+                                            <div className="ant-col-3 col-height">
+                                                <span>{val.gmtModified}</span>
+                                            </div>
+                                            <div className="ant-col-6 col-height handle-branch-menu">
+                                                <Button type="ghost" onClick={() => {
+                                                    this.titleModal = '修改信息';
+                                                    this.education = {
+                                                        id: val.id,
+                                                        name: val.name,
+                                                        pcount: val.pcount,
+                                                        classStatus: val.classStatus,
+                                                        classTime: val.classTime
+                                                    }
+                                                    this.showModal = true;
+                                                }}>修改信息</Button>
+                                                <Button type="ghost" onClick={() => {
+                                                    this.delClassInfo(val.id, key);
+                                                }}>删除</Button>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+
+                                <Loading show={this.initLoading} message={"加载中..."}/>
+                                <NoData show={!this.initLoading && !this.list.length}/>
+                            </div>
+                            {this.list.length > 0 && (
+                                <Pagination
+                                    selectComponentClass={Select}
+                                    total={this.state.total}
+                                    showTotal={total => `共 ${total} 条`}
+                                    pageSize={10}
+                                    current={this.activePage}
+                                    defaultCurrent={this.activePage}
+                                    onChange={(noop) => {
+                                        this.activePage = noop;
+                                    }}
+                                />
+                            )}
+                        </div>
+                    </div>
+                )}
+                <div className="group-btn" style={{marginTop: 25}}>
+                    <button className="input-btn" onClick={this.update.bind(this)}>
+                        {this.props.type === 'add' ? (
+                            this.step == 0 ? '下一步' : '保存'
+                        ) : '保存'}
+                    </button>
+                    {(this.detailInfo.state == 1 || this.detailInfo.state == 4) && (
+                        <button className="input-btn btn-primary">
+                            提交审核
                         </button>
-                    </div>
-                </div>
-                <div className="review-list-container">
-                    <div className="review-table">
-                        <div className="ant-row review-border review-head">
-                            <div className="ant-col-2">课程ID</div>
-                            <div className="ant-col-6">课程名称</div>
-                            <div className="ant-col-2">开始日期</div>
-                            <div className="ant-col-2">报名截止日期</div>
-                            <div className="ant-col-2">课程状态</div>
-                            <div className="ant-col-2">报名人数</div>
-                            <div className="ant-col-2 col-center">课程价格</div>
-                            <div className="ant-col-6 col-center">操作</div>
-                        </div>
-                        <div className="ant-row review-content review-border">
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-6 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-2 col-height">
-                                <span>1001</span>
-                            </div>
-                            <div className="ant-col-6 col-height handle-branch-menu">
-                                <Button type="ghost">提交审核</Button>
-                                <Button type="ghost">下线</Button>
-                                <Button type="ghost" onClick={() => {
-                                    this.props.history.push('/cms/course/info/1');    
-                                }}>详情</Button>
-                            </div>
-                        </div>
-                    </div>
-                    {this.list.length > 0 && (
-                        <Pagination
-                            selectComponentClass={Select}
-                            total={this.state.total}
-                            showTotal={total => `共 ${total} 条`}
-                            pageSize={10}
-                            current={this.activePage}
-                            defaultCurrent={this.activePage}
-                            onChange={(noop) => {
-                                this.activePage = noop;
-                            }}
-                        />
                     )}
+                    {this.detailInfo.state == 3 && (
+                        <button className="input-btn input-btn-red" onClick={this.updateState.bind(this, 5)}>
+                            下线
+                        </button>
+                    )}
+                    {this.detailInfo.state == 5 && (
+                        <button className="input-btn btn-primary" onClick={this.updateState.bind(this, 3)}>
+                            上线
+                        </button>
+                    )}
+                    <button className="input-btn input-btn-white" onClick={() => {
+                        this.props.history.push('/cms/course');
+                    }}>返回</button>
                 </div>
+
+
                 <Modal 
                     show={this.showModal}
                     title={this.titleModal}
@@ -345,7 +421,7 @@ export default observer(class CourseInfo extends Component {
                         this.showModal = false;
                     }}
                     onSubmit={() => {
-                        {/* this.handleResumeInfo(); */}
+                        this.handleClass();
                     }}
                 >
                     {this.classHandle()}
@@ -357,47 +433,31 @@ export default observer(class CourseInfo extends Component {
         return (
             <ul>
                 <li className="item border-t userName">
-                    <Label>开始时间</Label>
-                    <DatePicker value={this.education.start_date} onChange={(e) => {
-                        this.education.start_date = e;
-                    }}/>
+                    <Label>班级名称</Label>
+                    <input type="text" className="the_input topSpecial users_tel" value={this.education.name}  onChange={(v) => {
+                        this.education.name = v.target.value;
+                    }} placeholder="请输入班级名称"/>
                 </li>
                 <li className="item border-t userName">
-                    <Label>结束时间</Label>
-                    <DatePicker value={this.education.finish_date} onChange={(e) => {
-                        this.education.finish_date = e;
-                    }}/>
+                    <Label>上课人数</Label>
+                    <input type="number" className="the_input topSpecial users_tel" value={this.education.pcount}  onChange={(v) => {
+                        this.education.pcount = v.target.value;
+                    }} placeholder="请输入班级上课人数"/>
                 </li>
                 <li className="item border-t userName">
-                    <input type="text" className="the_input topSpecial users_tel" value={this.education.school}  onChange={(v) => {
-                        this.education.school = v.target.value;
-                    }} placeholder="请输入您的学校"/>
+                    <Label>上课时间</Label>
+                    <input type="text" className="the_input topSpecial users_tel" value={this.education.classTime}  onChange={(v) => {
+                        this.education.classTime = v.target.value;
+                    }} placeholder="请输入班级上课时间"/>
                 </li>
                 <li className="item border-t userName">
-                    <input type="text" className="the_input topSpecial users_tel" value={this.education.major}  onChange={(v) => {
-                        this.education.major = v.target.value;
-                    }} placeholder="请输入您的专业"/>
-                </li>
-                <li className="item border-t userName">
-                    <input type="text" className="the_input topSpecial users_tel" readOnly value={this.education.education} placeholder="请输入您的学历" onClick={() => {
-                        this.eduModal = !this.eduModal;
-                    }}/>
-                    <i className="select-shixin-arrow"></i>
-                    <MyActionSheetChoose
-                        maskClosable={true}
-                        index ={this.education.education || ''}
-                        top={48}
-                        onClose={() => {     
-                            this.eduModal = false;
-                        }}
-                        onChange={(val) => {  
-                            if (val) {
-                                this.education.education = val.key;
-                            }
-                            this.eduModal = false;
-                        }}
-                        visible={this.eduModal}>
-                    </MyActionSheetChoose>
+                    <Label>状态</Label>
+                    <RadioGroup onChange={(e) => {
+                        this.education.classStatus = e.target.value;
+                    }} value={this.education.classStatus}>
+                        <Radio key="0" value={'0'}>生效</Radio>
+                        <Radio key="1" value={'1'}>失效</Radio>
+                    </RadioGroup>
                 </li>
             </ul> 
         );
@@ -410,13 +470,16 @@ export default observer(class CourseInfo extends Component {
         }).then((res)=>{
             let info = {};
             if (res.rspCode == '0000000000' && res.body) {
-               this.catelist = res.body.list.map(val => {
+                this.catelist = res.body.list.map(val => {
                    return {
                        name: val.categoryName,
                        key: val.id
                    }
-               });
-               this.getDetail();
+                });
+                if (this.props.type != 'add') {
+                    this.getDetail();
+                    this.getClassList();
+                }
             }
         });
     }
@@ -447,14 +510,139 @@ export default observer(class CourseInfo extends Component {
     }
 
     priceCourse(price) {
-        let info = JSON.parse(Cookies.get('userInfo'));
         Service.settleAmount({
-            corId: info.corid,
+            corId: this.corid,
             originalAmount: parseFloat(price).toFixed(2)
         }).then((res)=>{
             if (res.rspCode == '0000000000' && res.body) {
                 this.detailInfo.settleAmount = res.body.settleAmount;
             }
+        });
+    }
+    
+    update() {
+        let {id, name, description, address, cstartDate, cendDate, eendDate, ccapcity, properAges, price, priceUnit, categoryId, videoPlayLink, courseAttr, rows, videoState} = this.detailInfo;
+        let params = {
+            corporateId: this.corid,
+            name,
+            description,
+            address,
+            cstartDate: moment(cstartDate).format('YYYY-MM-DD'),
+            cendDate: moment(cendDate).format('YYYY-MM-DD'),
+            eendDate: moment(eendDate).format('YYYY-MM-DD'),
+            ccapcity,
+            properAges,
+            price,
+            priceUnit,
+            categoryId,
+            videoPlayLink,
+            courseAttr,
+            rows,
+            videoState
+        };
+        // 修改
+        if (this.props.type !== 'add' || id) {
+            params.id = id;
+            Service.updateCourse(params).then(res => {
+                if (res.rspCode == '0000000000') {
+                    message.success('操作成功');
+                }
+                else {
+                    message.error(res.rspMsg || '未知原因导致失败');
+                }
+            });
+        }
+        else {
+            Service.addCourse(params).then(res => {
+                if (res.rspCode == '0000000000') {
+                    message.success('操作成功');
+                    this.step = 1;
+                    this.id = res.body.id;
+                }
+                else {
+                    message.error(res.rspMsg || '未知原因导致失败');
+                }
+            });
+        }
+    }
+
+    updateState(state) {
+        Service.updateCourse({
+            id: this.id,
+            state
+        }).then(res => {
+            if (res.rspCode == '0000000000') {
+                this.detailInfo.state = state;
+                message.success('操作成功');
+            }
+            else {
+                message.error(res.rspMsg || '未知原因导致失败');
+            }
+        });
+    }
+
+
+    // 获取班级信息
+    getClassList() {
+        Service.getClassList({
+            pageIndex: this.activePage,
+            pageSize: 10,
+            courseId: this.id
+        }).then((res)=>{
+            if (res.rspCode == '0000000000') {
+                this.list = res.body.list;
+                this.setState({
+                    total: parseInt(res.body.totalNum, 10)
+                });
+            }
+            else {
+                this.list = [];
+                this.setState({
+                    total: 0
+                });
+            }
+            this.initLoading = false;
+        });
+    }
+    delClassInfo(id, index) {
+        Service.delClass({
+            id
+        }).then(res => {
+            if (res.rspCode == '0000000000') {
+                message.success('操作成功');
+                this.list.splice(index, 1);
+            }
+            else {
+                message.error(res.rspMsg || '未知原因导致失败');
+            }
+        });
+    }
+    handleClass() {
+        let {id, name, pcount, classTime, classStatus} = this.education;
+        let params = {
+            name,
+            pcount,
+            classTime
+        };
+        if (id) {
+            params.id = id;
+            params.classStatus = classStatus;
+        }
+        else {
+            params.courseId = this.id;
+        }
+        Service.updateClass(params).then(res => {
+            if (res.rspCode == '0000000000') {
+                message.success('操作成功');
+            }
+            else {
+                message.error(res.rspMsg || '未知原因导致失败');
+            }
+            if (!id) {
+                this.activePage = 1;
+            }
+            this.getClassList();
+            this.showModal = false;
         });
     }
 });

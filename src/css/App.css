@@ -4,6 +4,14 @@ input:-webkit-autofill {
     /* -webkit-box-shadow: 0 0 0px 1000px #fff inset !important; */
     /* box-shadow: 0 0 0px 1000px #fff inset !important; */
 }
+input::input-placeholder,
+input:-webkit-input-placeholder,
+input:-moz-placeholder,
+input::-moz-placeholder,
+input:-ms-input-placeholder {
+    color: #cccccc !important;
+    font-weight: 200 !important;
+}
 
 *, :after, :before {
     -webkit-box-sizing: border-box;
@@ -62,6 +70,15 @@ a:hover {
 ul,
 li {
     list-style: none;
+}
+.no-b-all {
+    border: none !important;
+}
+.no-t {
+    border-top: none !important;
+}
+.no-b {
+    border-bottom: none !important;
 }
 .fl, .l, .pull-left {
     float: left;
@@ -420,8 +437,8 @@ input[type=file],
 }
 .m-entry dt {
     float: left;
-    color: #666;
-    font-weight: bold;
+    color: #777;
+    font-weight: 400;
     width: 120px;
 }
 .m-entry dd {
@@ -438,6 +455,8 @@ input[type=file],
     line-height: 20px;
     padding: 10px 0;
     width: 90%;
+    color: #333;
+    font-weight: 600;
 }
 .m-entry input[readonly] {
     cursor: pointer;
@@ -606,4 +625,15 @@ input[type=file],
 
 .loading-view .msg {
     margin-top: 40px;
+}
+
+/*按钮*/
+.group-btn {
+    text-align: center;
+}
+
+.group-btn .input-btn {
+    width: 200px;
+    display: inline-block;
+    margin: 0 10px;
 }

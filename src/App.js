@@ -28,6 +28,8 @@ import Page from './pages/Page';
 import Course from './pages/Course';
 import CourseInfo from './pages/CourseInfo';
 import Order from './pages/Order';
+import Coupon from './pages/Coupon';
+import CouponInfo from './pages/CouponInfo';
 // 个人配置
 import auth  from './config/auth';
 const HeaderWithRouter = withRouter(Header);
@@ -94,8 +96,21 @@ let App = observer(class App extends Component {
                                                 <Route path="/cms/info" {...props} component={Info}/>
                                                 <Route path="/cms/page" {...props} component={Page}/>
                                                 <Route exact={true} path="/cms/course" {...props} component={Course}/>
-                                                <Route exact={true} path="/cms/course/info/:id" {...props} component={CourseInfo}/>
+                                                <Route exact={true} path="/cms/course/add" render={(props)=>{
+                                                    return <CourseInfo {...props}   type="add"/>
+                                                }}/>
+                                                <Route exact={true} path="/cms/course/info/:id" render={(props)=>{
+                                                    return <CourseInfo {...props}   type="info"/>
+                                                }}/>
                                                 <Route path="/cms/order" {...props} component={Order}/>
+                                                <Route exact={true} path="/cms/coupon" {...props} component={Coupon}/>
+                                                <Route exact={true} path="/cms/coupon/add" render={(props)=>{
+                                                    return <CouponInfo {...props}   type="add"/>
+                                                }}/>
+                                                <Route exact={true} path="/cms/coupon/info/:id" render={(props)=>{
+                                                    return <CouponInfo {...props}   type="info"/>
+                                                }}/>
+
                                                 <Redirect to="/cms/info"/>
                                             </Switch>
                                             {/* <FooterNavWithRouter /> */}
